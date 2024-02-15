@@ -1,4 +1,6 @@
-import { object, optional, record, string, } from 'valibot';
+import {
+  object, optional, record, string,
+} from 'valibot';
 import { timestamp } from '~/lib/schemas';
 
 export const TemplateSchema = object({

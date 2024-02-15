@@ -8,6 +8,18 @@ export default defineNuxtConfig({
     '@nuxt/ui',
   ],
   vuefire: {
-    config: JSON.parse(import.meta.env.FIREBASE_CONFIG || '{}')
-  }
-})
+    config: JSON.parse(import.meta.env.FIREBASE_CONFIG || '{}'),
+  },
+  ui: {
+    icons: ['heroicons', 'mdi'],
+  },
+  app: {
+    head: {
+      titleTemplate: '%s %separator %siteName',
+      templateParams: {
+        siteName: 'Anhzf Labs',
+        separator: ' - ',
+      },
+    },
+  },
+});

@@ -1,10 +1,22 @@
-import type { TemplateService } from './interfaces';
+import type { Firestore } from 'firebase/firestore';
+import {
+  addDoc, collection, doc, updateDoc,
+} from 'firebase/firestore';
+import type { InRecipient, InTemplate, TemplateService } from './interfaces';
 
 export default class TemplateServiceImpl implements TemplateService {
-  get(id: string): Promise<{ message: string; title: string; createdAt: Date; }> {
-    throw new Error('Method not implemented.');
+  constructor(
+    private db: Firestore,
+  ) { }
+
+  async update(id: string, data: Pick<InTemplate, 'message'>) {
+    const docRef = doc(this.db, 'labs/whatsapp-template/templates', id);
+    return updateDoc(docRef, ...Object.entries(data).flat() as [string, unknown, ...unknown[]]);
   }
-  addRecipient(id: string, data: { name: string; contactNumber: string; labels: { [x: string]: string; }; }): Promise<{ name: string; contactNumber: string; labels: { [x: string]: string; }; }> {
-    throw new Error('Method not implemented.');
+
+  async addRecipient(id: string, data: InRecipient): Promise<string> {
+    const root = collection(this.db, 'labs/whatsapp-template/templates', id, 'recipients');
+    const result = await addDoc(root, data);
+    return result.path;
   }
 }
