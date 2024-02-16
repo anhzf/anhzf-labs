@@ -1,5 +1,4 @@
-export const buildWhatsAppLink = (phone: string, textTemplate: string, payload: Record<string, unknown> = {}) => {
-  const compiled = Object.entries(payload).reduce((acc, [key, value]) => acc.replace(`{{${key}}}`, String(value)), textTemplate);
-  const text = encodeURIComponent(compiled);
-  return `https://wa.me/${phone}?text=${text}`;
-};
+export const compileMessage = (template: string, payload: Record<string, unknown> = {}) => Object.entries(payload)
+  .reduce((acc, [key, value]) => acc.replace(`{{${key}}}`, String(value)), template);
+
+export const buildWhatsAppLink = (phone: string, text: string) => `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;

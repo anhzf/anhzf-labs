@@ -5,7 +5,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
       if (import.meta.browser) {
         const msg = err.message || String(err);
-        toast.add({ title: msg, color: 'red' });
+        toast.add({ title: msg, color: 'red', timeout: 0 });
       }
 
       if (Array.isArray(err.cause)

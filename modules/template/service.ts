@@ -1,6 +1,6 @@
 import type { Firestore } from 'firebase/firestore';
 import {
-  addDoc, collection, doc, updateDoc,
+  addDoc, collection, deleteDoc, doc, updateDoc,
 } from 'firebase/firestore';
 import type { InRecipient, InTemplate, TemplateService } from './interfaces';
 
@@ -18,5 +18,10 @@ export default class TemplateServiceImpl implements TemplateService {
     const root = collection(this.db, 'labs/whatsapp-template/templates', id, 'recipients');
     const result = await addDoc(root, data);
     return result.path;
+  }
+
+  async deleteRecipient(id: string, recipientId: string) {
+    const root = doc(this.db, 'labs/whatsapp-template/templates', id, 'recipients', recipientId);
+    return deleteDoc(root);
   }
 }

@@ -4,7 +4,7 @@ import { collection } from 'firebase/firestore';
 import { OnClickOutside } from '@vueuse/components';
 import type { FormSubmitEvent } from '#ui/types';
 import { RecipientSchema } from '~/modules/template/schemas';
-import { buildWhatsAppLink } from '~/modules/template/utils';
+import { buildWhatsAppLink, compileMessage } from '~/modules/template/utils';
 import type { InTemplate } from '~/modules/template/interfaces';
 import useTemplateStore from '~/stores/template';
 import { useLoading } from '~/composables/useLoading';
@@ -27,10 +27,16 @@ const columns = [
     label: 'Contact Number',
   },
   {
+    key: 'labels',
+    label: 'Labels',
+  },
+  {
     key: 'id',
     label: 'Actions',
   },
 ];
+
+const toast = useToast();
 
 const recipientsRoot = computed(() => (store.ref ? collection(store.ref, 'recipients') : null));
 const recipients = useCollection(recipientsRoot);
@@ -51,17 +57,26 @@ const recipientFields = reactive({
   contactNumber: '',
 });
 
-const onTemplateSubmit = (ev: FormSubmitEvent<Pick<InTemplate, 'message'>>) => {
-  loading(store.update(ev.data));
+const onTemplateSubmit = async (ev: FormSubmitEvent<Pick<InTemplate, 'message'>>) => {
+  await loading(store.update(ev.data));
+  toast.add({ title: 'Template updated' });
 };
 
-const onRecipientSubmit = (ev: FormSubmitEvent<Input<typeof RecipientSchema>>) => {
-  loading(store.addRecipient(ev.data));
+const onRecipientSubmit = async (ev: FormSubmitEvent<Input<typeof RecipientSchema>>) => {
+  await loading(store.addRecipient(ev.data));
+  toast.add({ title: 'Recipient added' });
+};
+
+const onRecipientDeleteClick = async (id: string) => {
+  if (window.confirm('Are you sure you want to delete this recipient?')) {
+    await loading(store.deleteRecipient(id));
+    toast.add({ title: 'Recipient deleted' });
+  }
 };
 </script>
 
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col gap-8">
     <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
       {{ store.template?.title }}
     </h1>
@@ -85,7 +100,6 @@ const onRecipientSubmit = (ev: FormSubmitEvent<Input<typeof RecipientSchema>>) =
 
           <u-button
             type="submit"
-            icon="i-heroicons-check"
             :loading="isLoading"
           >
             Save
@@ -125,6 +139,10 @@ const onRecipientSubmit = (ev: FormSubmitEvent<Input<typeof RecipientSchema>>) =
         </u-form>
       </div>
 
+      <h2 class="text-2xl sm:text-3xl">
+        Recipients
+      </h2>
+
       <u-table
         :columns="columns"
         :rows="rows"
@@ -139,15 +157,16 @@ const onRecipientSubmit = (ev: FormSubmitEvent<Input<typeof RecipientSchema>>) =
                 <div>
                   {{ [
                     row.contactNumber.slice(0, 3),
-                    showContact ? row.contactNumber.slice(3, 6) : '***',
-                    row.contactNumber.slice(6),
-                  ].join('-') }}
+                    showContact ? row.contactNumber.slice(3, 9) : '******',
+                    row.contactNumber.slice(9),
+                  ].join('') }}
                 </div>
                 <u-button
                   :icon="showContact ? 'i-heroicons-eye-slash':'i-heroicons-eye'"
                   variant="ghost"
                   square
                   dynamic
+                  color="gray"
                   @click="setState(!showContact)"
                 />
               </div>
@@ -155,16 +174,64 @@ const onRecipientSubmit = (ev: FormSubmitEvent<Input<typeof RecipientSchema>>) =
           </define-state>
         </template>
 
-        <template #id-data="{row}">
-          <div class="flex gap-4">
-            <u-button
-              icon="i-mdi-whatsapp"
-              :to="buildWhatsAppLink(row.contactNumber, store.template!.message, {...row.labels, name: row.name})"
-              target="_blank"
-            >
-              Send
-            </u-button>
+        <template #labels-data="{row}">
+          <div>
+            <u-badge
+              v-for="(label, key) in row.labels"
+              :key="key"
+              :label="`${key}: ${label}`"
+              variant="soft"
+            />
           </div>
+        </template>
+
+        <template #id-data="{row}">
+          <define-state
+            :val="compileMessage(store.template!.message, {...row.labels, id: row.id, name: row.name})"
+            #="{state: message}"
+          >
+            <div class="flex gap-4">
+              <u-button
+                icon="i-mdi-whatsapp"
+                :to="buildWhatsAppLink(row.contactNumber, message)"
+                target="_blank"
+              >
+                Send
+              </u-button>
+
+              <u-popover mode="hover">
+                <u-button variant="link">
+                  Preview
+                </u-button>
+
+                <template #panel>
+                  <u-card>
+                    <template #header>
+                      <div class="font-bold">
+                        {{ row.name }}
+                      </div>
+                    </template>
+
+                    <div class="whitespace-pre-line">
+                      {{ message }}
+                    </div>
+                  </u-card>
+                </template>
+              </u-popover>
+
+              <u-button
+                icon="i-heroicons-pencil"
+                variant="ghost"
+              />
+
+              <u-button
+                icon="i-heroicons-trash"
+                variant="ghost"
+                color="red"
+                @click="onRecipientDeleteClick(row.id)"
+              />
+            </div>
+          </define-state>
         </template>
       </u-table>
     </div>

@@ -16,7 +16,7 @@ const useTemplateStore = defineStore('template', () => {
   });
 
   const templateRef = computed(() => (currentId.value ? doc(db, 'labs/whatsapp-template/templates', currentId.value) : null));
-  const template = useDocument(templateRef, { reset: true, once: true });
+  const template = useDocument(templateRef, { reset: true });
 
   onMounted(() => {
     service.value = new TemplateServiceImpl(db);
@@ -48,11 +48,18 @@ const useTemplateStore = defineStore('template', () => {
     return s.addRecipient(currentId.value, validated);
   };
 
+  const deleteRecipient = (recipientId: string) => {
+    if (!currentId.value) throw createError({ cause: ['client'], statusCode: 400 });
+    const s = ensureService();
+    return s.deleteRecipient(currentId.value, recipientId);
+  };
+
   return {
     template,
     ref: templateRef,
     update,
     addRecipient,
+    deleteRecipient,
     ensureTemplate,
   };
 });

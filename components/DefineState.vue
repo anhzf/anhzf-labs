@@ -6,6 +6,8 @@ interface Props {
 const props = defineProps<Props>();
 
 const state = ref(props.value);
+syncRefs(() => props.val, state);
+
 const setState = (value: D) => {
   state.value = value;
 };
