@@ -10,6 +10,7 @@ import useTemplateStore from '~/stores/template';
 import { useLoading } from '~/composables/useLoading';
 
 const store = useTemplateStore();
+await store.ensureTemplate();
 
 if (!store.template) throw createError({ statusCode: 404 });
 

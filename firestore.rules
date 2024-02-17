@@ -1,0 +1,163 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function can(wanted) {
+      let userDoc = get(/databases/$(database)/documents/sinthesisV2_users/$(request.auth.uid)).data;
+      return userDoc.get(['permissions',wanted], false);
+    }
+    
+    function grant(wantedPermission, wantedScopes) {
+      // expect Map with keys as method and values as array of fields or '*'
+      let grantedMethods = get(/sinthesis_roles/$(request.auth.token.role)).permissions.get(wantedPermission, {});
+      // expect [method, value?]
+      let wanted = wantedScopes.split('=');
+      let wantedMethod = wanted[0];
+      // expect value to be comma separated list of fields or '*'
+      let wantedValue = wanted[1] is string ? wanted[1] : '*';
+      let wantedFields = wantedValue.split(',');
+      // expect array of fields or '*'
+      let granted = grantedMethods.get(wantedMethod, []);
+      return granted == '*'
+        || wantedFields.hasAny(['*'])
+        || wantedFields.hasOnly(granted);
+    }
+
+    match /{documents=**} {
+      allow read: if true;
+      // allow write: if request.auth != null;
+    }
+
+    match /sinthesis_config/{research} {
+      allow write: if false;
+      allow list: if false;
+    }
+    
+    match /sinthesis_seeds/{role} {
+    	allow create: if true;
+      allow list: if request.query.limit <= 5;
+    }
+    
+    match /sinthesis_roles/{role} {
+    	allow create: if true;
+    }
+    
+    match /sinthesis_researches/{research} {
+      allow create: if grant('research', 'create');
+    }
+
+    match /sinthesis_devices/{research} {
+      allow write: if true;
+      allow read: if true;
+    }
+    
+    match /sinthesisV2_devices/{research} {
+      allow write: if true;
+      allow read: if true;
+    }
+
+    match /sinthesisV2_users/{user} {
+      allow create: if user == request.auth.uid;
+      allow update: if can('organization.manageUser')
+        || (request.auth.uid == user
+          && !request.resource.data.diff(resource.data).affectedKeys()
+            .hasAny(['status', 'inheritedRoles', 'permissions', 'statusesMeta']));
+
+      match /notifications/{notification} {
+        allow update: if request.auth.uid == user;
+      }
+
+      match /activities/{activity} {
+        allow create: if request.auth != null;
+        allow update: if resource.data.name == 'research:consultation'
+          // TODO: Uncomment below line in future, the emulator is not working with this syntax
+          // && resource.data.payload.supervisor.path == /sinthesisV2_users/$request.auth.uid
+          && request.resource.data.payload.diff(resource.data.payload).affectedKeys().hasAny(['feedback']);
+      }
+    }
+
+    match /sinthesisV2_invitations/{invitation} {
+      allow create: if can('organization.manageUser');
+      allow update: if can('organization.manageUser');
+      allow delete: if can('organization.manageUser');
+    }
+
+    match /sinthesisV2_researches/{research} {
+      allow create: if can('research.create');
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasAny(['$aggregate'])
+       || resource.data.author.ref == request.auth.uid
+       || request.resource.data.diff(resource.data).affectedKeys()
+        .hasAny(['supervisor1', 'supervisor2', 'state', 'verified']) && can('research.verifyPlan')
+        || request.resource.data.diff(resource.data).affectedKeys().hasAny(['currentExam']);
+    }
+
+    match /sinthesisV2_exams/{exam} {
+      allow create: if request.auth != null;
+      // Should use below match statement, it's working on production firestore but it's not working in emulator
+      // allow create: if path(request.resource.data.examinee.ref.path) == /sinthesisV2_users/$(request.auth.uid);
+      allow update: if request.auth != null
+        && (can('exam.schedule')
+          // || resource.data.assessor.chief.ref == request.auth.uid
+          || request.resource.data.diff(resource.data).affectedKeys().hasAny(['requirements', 'revision'])
+            || request.resource.data.status == 'requested'
+              // When exam marked as finished.
+              // It should validate the right person (currently emulator is not working)
+              || (resource.data.status == 'scheduled' && request.resource.data.status == 'finished'))
+              || (['revision', 'finished'].hasAny([resource.data.status]) && ['failed', 'revision', 'passed'].hasAny([request.resource.data.status]));
+
+      match /assessments/{assessment} {
+        // function isAssessor() {
+        //   let exam = get(/databases/$(database)/documents/sinthesisV2_exams/$(exam)).data;
+        //   return debug(exam.assessor.chief.ref == request.auth.uid
+        //     || exam.assessor.supervisors[request.auth.uid] != null
+        //     || exam.assessor.others[request.auth.uid] != null);
+        // }
+
+        // allow create: if isAssessor();
+
+        // allow create: if request.resource.data.assessor.ref[1] == request.auth.uid;
+
+        allow create: if request.auth != null;
+      }
+    }
+    
+    match /wa-templates/{waTemplate} {
+    	allow update: if true;
+    }
+    
+    match /petakehidupan_assessment-sessions/{session} {
+    	allow write: if true;
+    }
+    
+    match /petakehidupan_events/{event} {
+    	allow write: if request.auth != null;
+    }
+    
+    match /petakehidupan_group-reports/{groupReport} {
+    	allow write: if true;
+    }
+    
+    match /petakehidupan_tokens/{token} {
+    	allow write: if request.auth != null;
+    }
+    
+    match /petakehidupan_meta/{meta} {
+    	allow write: if request.auth != null;
+    }
+    
+    match /undangan_absences/{absence} {
+    	allow write: if true;
+    }
+
+    match /sinthesis_users/{user} {
+      allow create: if user == request.auth.uid;
+      allow update: if debug(request.resource.data.diff(resource.data).affectedKeys().hasAny(['status', 'permissions'])
+        &&  get(/databases/$(database)/documents/sinthesis_users/$(request.auth.uid)).data.permissions.keys());
+    }
+    
+    match /labs/whatsapp-template/{documents=**} {
+    	allow read: if true;
+      allow write: if true;
+    }
+  }
+}

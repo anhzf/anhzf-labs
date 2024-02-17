@@ -1,0 +1,408 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "activities",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "context.research",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "timestamp",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "activities",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "context.research.ref",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "timestamp",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "activities",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "name",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "payload.dateTime",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "activities",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "name",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "resource",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "payload.dateTime",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "notifications",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "type",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "petakehidupan_assessment-sessions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "token",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "results.lElVPydJ9Ym7OIDW8Qn9.analysis.selectedCategories.elementary",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "results.lElVPydJ9Ym7OIDW8Qn9.analysis.selectedCategories.genIdea",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "results.lElVPydJ9Ym7OIDW8Qn9.analysis.selectedCategories.networking",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "results.lElVPydJ9Ym7OIDW8Qn9.analysis.selectedCategories.reasoning",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "results.lElVPydJ9Ym7OIDW8Qn9.analysis.selectedCategories.technical",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_exams",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "assessorRefs",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "name",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "schedule.date",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_exams",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "assessorRefs",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "schedule.date",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_exams",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "assessorRefs",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "schedule.date",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_exams",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "examinee.ref",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "name",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "schedule.date",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_exams",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "examinee.ref",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "name",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "schedule.date",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_exams",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "examinee.ref",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "schedule.date",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_exams",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "examinee.ref",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "schedule.date",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_invitations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "acceptedAt",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "email",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "expiresAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_researches",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "author.ref",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lastActivityAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_researches",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "author.ref",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lastActivityAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_researches",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "state",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lastActivityAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_researches",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "supervisor1.ref",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lastActivityAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_researches",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "supervisor1.ref",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lastActivityAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_researches",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "supervisor2.ref",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lastActivityAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_researches",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "supervisor2.ref",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lastActivityAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "sinthesisV2_users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "department.ref",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "activities",
+      "fieldPath": "payload.consultant",
+      "ttl": false,
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "arrayConfig": "CONTAINS",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "activities",
+      "fieldPath": "payload.supervisor",
+      "ttl": false,
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "arrayConfig": "CONTAINS",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    }
+  ]
+}
