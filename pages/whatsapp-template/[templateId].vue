@@ -118,7 +118,10 @@ const onRecipientDeleteClick = async (id: string) => {
                 target="_blank"
               />
 
-              <u-popover mode="hover">
+              <u-popover
+                mode="hover"
+                class="max-w-[max(65ch,100vw)]"
+              >
                 <u-button
                   label="Preview"
                   variant="link"
@@ -128,18 +131,18 @@ const onRecipientDeleteClick = async (id: string) => {
                   <u-card>
                     <template #header>
                       <div class="flex justify-between items-center">
-                        <div class="font-bold">
-                          Preview Message
-                        </div>
                         <u-button
                           icon="i-heroicons-clipboard"
                           variant="soft"
                           @click="copy(message).then(() => toast.add({ title: 'Copied to clipboard' }))"
                         />
+                        <div class="font-bold">
+                          Preview Message
+                        </div>
                       </div>
                     </template>
 
-                    <div class="whitespace-pre-line max-w-prose">
+                    <div class="whitespace-pre-line overflow-x-auto">
                       {{ message }}
                     </div>
                   </u-card>
