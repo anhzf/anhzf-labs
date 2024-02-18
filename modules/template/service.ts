@@ -20,6 +20,13 @@ export default class TemplateServiceImpl implements TemplateService {
     return result.path;
   }
 
+  async updateRecipient(id: string, recipientId: string, data: Partial<InRecipient>) {
+    const root = doc(this.db, 'labs/whatsapp-template/templates', id, 'recipients', recipientId);
+    const updates = Object.entries(data).flat() as [string, unknown, ...unknown[]];
+    if (updates.length === 0) return;
+    await updateDoc(root, ...updates);
+  }
+
   async deleteRecipient(id: string, recipientId: string) {
     const root = doc(this.db, 'labs/whatsapp-template/templates', id, 'recipients', recipientId);
     return deleteDoc(root);

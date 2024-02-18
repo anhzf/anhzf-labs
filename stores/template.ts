@@ -48,6 +48,13 @@ const useTemplateStore = defineStore('template', () => {
     return s.addRecipient(currentId.value, validated);
   };
 
+  const updateRecipient = (recipientId: string, payload: Partial<InRecipient>) => {
+    if (!currentId.value) throw createError({ cause: ['client'], statusCode: 400 });
+    const s = ensureService();
+    const validated = ValidateTemplate.updateRecipient(payload);
+    return s.updateRecipient(currentId.value, recipientId, validated);
+  };
+
   const deleteRecipient = (recipientId: string) => {
     if (!currentId.value) throw createError({ cause: ['client'], statusCode: 400 });
     const s = ensureService();
@@ -59,6 +66,7 @@ const useTemplateStore = defineStore('template', () => {
     ref: templateRef,
     update,
     addRecipient,
+    updateRecipient,
     deleteRecipient,
     ensureTemplate,
   };

@@ -1,4 +1,4 @@
-import { safeParse, pick } from 'valibot';
+import { safeParse, pick, partial } from 'valibot';
 import { RecipientSchema, TemplateSchema } from '~/modules/template/schemas';
 
 const ValidateTemplate = {
@@ -16,6 +16,12 @@ const ValidateTemplate = {
 
   createRecipient: (data: unknown) => {
     const { success, issues, output } = safeParse(RecipientSchema, data, { abortEarly: true });
+    if (!success) throw createError({ cause: ['validation'], data: issues });
+    return output;
+  },
+
+  updateRecipient: (data: unknown) => {
+    const { success, issues, output } = safeParse(partial(RecipientSchema), data, { abortEarly: true });
     if (!success) throw createError({ cause: ['validation'], data: issues });
     return output;
   },

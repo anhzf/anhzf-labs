@@ -7,8 +7,5 @@ export const useLoading = (init: boolean = false) => {
     });
   };
 
-  return {
-    isLoading,
-    loading,
-  };
+  return [isLoading, loading] as const;
 };
