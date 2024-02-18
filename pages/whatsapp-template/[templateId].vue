@@ -120,7 +120,7 @@ const onRecipientDeleteClick = async (id: string) => {
 
               <u-popover
                 mode="hover"
-                class="max-w-[max(65ch,100vw)]"
+                class="max-w-[max(65ch,96vw)]"
               >
                 <u-button
                   label="Preview"
@@ -130,7 +130,7 @@ const onRecipientDeleteClick = async (id: string) => {
                 <template #panel>
                   <u-card>
                     <template #header>
-                      <div class="flex justify-between items-center">
+                      <div class="flex items-center gap-2">
                         <u-button
                           icon="i-heroicons-clipboard"
                           variant="soft"
