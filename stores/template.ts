@@ -41,10 +41,16 @@ const useTemplateStore = defineStore('template', () => {
     return s.update(currentId.value, validated);
   };
 
-  const addRecipient = (payload: InRecipient) => {
+  const addRecipient = (...[one, ...payload]: [InRecipient, ...InRecipient[]]) => {
     if (!currentId.value) throw createError({ cause: ['client'], statusCode: 400 });
     const s = ensureService();
-    const validated = ValidateTemplate.createRecipient(payload);
+
+    if (payload.length) {
+      const validated = payload.map((p) => ValidateTemplate.createRecipient(p));
+      return s.addRecipient(currentId.value, one, ...validated);
+    }
+
+    const validated = ValidateTemplate.createRecipient(one);
     return s.addRecipient(currentId.value, validated);
   };
 

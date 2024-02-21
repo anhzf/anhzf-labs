@@ -34,12 +34,23 @@ const [, loading] = useLoading();
 
 const recipientFields = ref<InRecipient>();
 const recipientIdModal = ref<string>();
+const showImportCsvModal = ref(false);
 
 const onRecipientDeleteClick = async (id: string) => {
   if (window.confirm('Are you sure you want to delete this recipient?')) {
     await loading(store.deleteRecipient(id));
     toast.add({ title: 'Recipient deleted' });
   }
+};
+
+const onImport = async (data: Record<string, unknown>[]) => {
+  if (!window.confirm(`Are you sure you want to import ${data.length} recipients?`)) return;
+
+  if (!data.length) return;
+
+  await loading(store.addRecipient(...data as [InRecipient, ...InRecipient[]]));
+  showImportCsvModal.value = false;
+  toast.add({ title: `${data.length} Recipients imported` });
 };
 </script>
 
@@ -56,11 +67,23 @@ const onRecipientDeleteClick = async (id: string) => {
         <h2 class="text-2xl sm:text-3xl">
           Recipients
         </h2>
-        <u-button
-          icon="i-heroicons-plus"
-          variant="outline"
-          @click="recipientFields = {name: '', contactNumber: ''}"
-        />
+
+        <div class="grow" />
+
+        <div class="flex gap-1.5">
+          <u-button
+            icon="i-heroicons-plus"
+            variant="outline"
+            @click="recipientFields = {name: '', contactNumber: ''}"
+          />
+
+          <u-button
+            label="Import"
+            icon="i-heroicons-document-arrow-down"
+            variant="outline"
+            @click="showImportCsvModal = true"
+          />
+        </div>
       </div>
 
       <u-table
@@ -176,6 +199,10 @@ const onRecipientDeleteClick = async (id: string) => {
         :value="recipientFields"
         @finish="(recipientFields = undefined, recipientIdModal = undefined)"
       />
+    </u-modal>
+
+    <u-modal v-model="showImportCsvModal">
+      <csv-importer @import="onImport" />
     </u-modal>
   </div>
 </template>
