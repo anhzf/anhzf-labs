@@ -1,6 +1,9 @@
+<!-- TODO: Work for other utilities, not for recipients only.
+  It receives input wanted columns, and wether to add rest columns as labels or related. -->
 <script lang="ts" setup generic="T">
 import { nanoid } from 'nanoid';
 import { parse as parseCsv } from 'csv-parse/browser/esm/sync';
+import { excludes } from '~/utils/array';
 
 interface Emits {
   (ev: 'import', data: Record<string, unknown>[]): void;
@@ -24,10 +27,12 @@ const colNameFields = reactive({
   name: 'name',
   contactNumber: 'contactNumber',
 });
+const includeAsLabels = ref<string[]>([]);
 
 const columns = computed(() => [
   { key: colNameFields.name, label: 'Name' },
   { key: colNameFields.contactNumber, label: 'Contact Number' },
+  { key: 'labels', label: 'Labels' },
   { key: 'actions', label: '' },
 ]);
 
@@ -40,21 +45,33 @@ const onFileChange = async (ev: Event) => {
 };
 
 const onImportClick = () => {
-  const imported = data.value.map((row) => ({
-    name: row[colNameFields.name] as string,
-    contactNumber: row[colNameFields.contactNumber] as string,
+  const imported = data.value.map(({
+    [colNameFields.name]: name,
+    [colNameFields.contactNumber]: contactNumber,
+    ...cols
+  }) => ({
+    name,
+    contactNumber,
+    labels: Object.fromEntries(
+      Object.entries(cols).filter(([k]) => includeAsLabels.value.includes(k)),
+    ),
   }));
   emit('import', imported);
 };
 
 const onRowDeleteClick = (id: string) => {
-  const i = data.value.findIndex((row) => row.id === id);
+  const i = data.value.findIndex((row) => row.$id === id);
   data.value.splice(i, 1);
 };
 
 whenever(source, async (v) => {
-  data.value = (await loading(parseFile(v))).map((el) => ({ ...el, id: nanoid() }));
-  dataCols.value = [...new Set(data.value.flatMap((row) => Object.keys(row)))];
+  const parsed = await loading(parseFile(v));
+  data.value = parsed.map((el) => ({ ...el, $id: nanoid() }));
+  dataCols.value = [...new Set(parsed.flatMap((row) => Object.keys(row)))];
+});
+
+watch(() => [colNameFields.name, colNameFields.contactNumber], (v) => {
+  includeAsLabels.value = excludes(includeAsLabels.value, ...v);
 });
 </script>
 
@@ -96,7 +113,9 @@ whenever(source, async (v) => {
               <span>Define columns</span>
               <table class="not-prose">
                 <tr>
-                  <th>Name</th>
+                  <th class="w-[18ch] leading-none py-[.25em]">
+                    Name
+                  </th>
                   <td>
                     <u-select
                       v-model="colNameFields.name"
@@ -106,13 +125,33 @@ whenever(source, async (v) => {
                   </td>
                 </tr>
                 <tr>
-                  <th>Contact Number</th>
+                  <th class="w-[18ch] leading-none py-[.25em]">
+                    Contact Number
+                  </th>
                   <td>
                     <u-select
                       v-model="colNameFields.contactNumber"
                       :disabled="!dataCols.length"
                       :options="[...new Set(['contactNumber', ...dataCols])]"
                     />
+                  </td>
+                </tr>
+                <tr>
+                  <th class="w-[18ch] leading-none py-[.25em]">
+                    Add Labels from
+                  </th>
+                  <td>
+                    <div class="flex gap-1">
+                      <u-checkbox
+                        v-for="(prop) in excludes(dataCols, colNameFields.name, colNameFields.contactNumber)"
+                        :key="prop"
+                        :label="prop"
+                        :model-value="includeAsLabels.includes(prop)"
+                        @update:model-value="$event
+                          ? includeAsLabels.push(prop)
+                          : includeAsLabels.splice(includeAsLabels.indexOf(prop), 1)"
+                      />
+                    </div>
                   </td>
                 </tr>
               </table>
@@ -128,13 +167,27 @@ whenever(source, async (v) => {
                 :loading="isLoading"
                 class="not-prose overflow-auto max-h-[40vh]"
               >
+                <template #labels-data="{row}">
+                  <div class="flex gap-1 flex-wrap max-w-[36ch]">
+                    <u-badge
+                      v-for="(label, key) in Object.fromEntries(
+                        Object.entries(row).filter(([k]) => includeAsLabels.includes(k))
+                      )"
+                      :key="key"
+                      :label="`${key}: ${label}`"
+                      variant="soft"
+                      size="xs"
+                    />
+                  </div>
+                </template>
+
                 <template #actions-data="{row}">
                   <u-button
                     icon="i-heroicons-trash"
                     variant="ghost"
                     square
                     color="red"
-                    @click="onRowDeleteClick(row.id)"
+                    @click="onRowDeleteClick(row.$id)"
                   />
                 </template>
               </u-table>

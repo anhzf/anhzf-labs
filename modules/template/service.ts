@@ -18,7 +18,7 @@ export default class TemplateServiceImpl implements TemplateService {
   async addRecipient(id: string, ...[one, ...data]: [InRecipient, ...InRecipient[]]): Promise<string[]> {
     const root = collection(this.db, 'labs/whatsapp-template/templates', id, 'recipients');
     if (data.length) {
-      const chunksIds = await Promise.all(chunks(data, FIRESTORE_MAX_OPERATIONS)
+      const chunksIds = await Promise.all(chunks([one].concat(data), FIRESTORE_MAX_OPERATIONS)
         .map(async (chunk) => {
           const batch = writeBatch(this.db);
           const chunkIds = chunk.map((d) => {

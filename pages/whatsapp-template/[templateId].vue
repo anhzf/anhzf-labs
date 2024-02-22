@@ -73,7 +73,6 @@ const onImport = async (data: Record<string, unknown>[]) => {
         <div class="flex gap-1.5">
           <u-button
             icon="i-heroicons-plus"
-            variant="outline"
             @click="recipientFields = {name: '', contactNumber: ''}"
           />
 
@@ -201,7 +200,10 @@ const onImport = async (data: Record<string, unknown>[]) => {
       />
     </u-modal>
 
-    <u-modal v-model="showImportCsvModal">
+    <u-modal
+      v-model="showImportCsvModal"
+      :ui="{width: 'sm:max-w-xl'}"
+    >
       <csv-importer @import="onImport" />
     </u-modal>
   </div>
