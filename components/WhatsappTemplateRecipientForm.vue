@@ -19,7 +19,6 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), {
   value: () => ({
     name: '',
-    contactNumber: '',
   }),
   id: undefined,
   title: undefined,
@@ -58,7 +57,7 @@ const onSubmit = async (ev: FormSubmitEvent<InRecipient>) => {
 
       <div class="space-y-2">
         <u-form-group
-          label="Name"
+          label="Person Name or Group Name"
           name="name"
           required
         >
@@ -68,11 +67,11 @@ const onSubmit = async (ev: FormSubmitEvent<InRecipient>) => {
         <u-form-group
           label="Contact Number"
           name="contactNumber"
-          required
         >
           <u-input
             v-model="fields.contactNumber"
             type="tel"
+            placeholder="Required for person"
           />
         </u-form-group>
 

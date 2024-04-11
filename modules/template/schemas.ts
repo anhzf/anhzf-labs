@@ -11,6 +11,6 @@ export const TemplateSchema = object({
 
 export const RecipientSchema = object({
   name: string(),
-  contactNumber: string(),
+  contactNumber: optional(string()),
   labels: optional(record(string()), {}),
 });

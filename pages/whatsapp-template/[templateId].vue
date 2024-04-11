@@ -23,7 +23,7 @@ const toast = useToast();
 const { copy } = useClipboard();
 
 const recipientsRoot = computed(() => (store.ref ? collection(store.ref, 'recipients') : null));
-const recipients = useCollection(recipientsRoot);
+const { data: recipients, pending: recipientsPending } = useCollection(recipientsRoot);
 const rows = computed(() => recipients.value.map((recipient, index) => ({
   ...recipient,
   number: index + 1,
@@ -73,7 +73,7 @@ const onImport = async (data: Record<string, unknown>[]) => {
         <div class="flex gap-1.5">
           <u-button
             icon="i-heroicons-plus"
-            @click="recipientFields = {name: '', contactNumber: ''}"
+            @click="recipientFields = { name: '', contactNumber: '' }"
           />
 
           <u-button
@@ -88,11 +88,12 @@ const onImport = async (data: Record<string, unknown>[]) => {
       <u-table
         :columns="columns"
         :rows="rows"
+        :loading="recipientsPending"
       >
-        <template #contactNumber-data="{row}">
+        <template #contactNumber-data="{ row }">
           <define-state
             :val="false"
-            #="{state: showContact, setState}"
+            #="{ state: showContact, setState }"
           >
             <on-click-outside @trigger="setState(false)">
               <div class="flex items-center gap-2">
@@ -104,7 +105,7 @@ const onImport = async (data: Record<string, unknown>[]) => {
                   ].join('') }}
                 </div>
                 <u-button
-                  :icon="showContact ? 'i-heroicons-eye-slash':'i-heroicons-eye'"
+                  :icon="showContact ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
                   variant="ghost"
                   square
                   dynamic
@@ -116,7 +117,7 @@ const onImport = async (data: Record<string, unknown>[]) => {
           </define-state>
         </template>
 
-        <template #labels-data="{row}">
+        <template #labels-data="{ row }">
           <div class="flex gap-1">
             <u-badge
               v-for="(label, key) in row.labels"
@@ -127,17 +128,26 @@ const onImport = async (data: Record<string, unknown>[]) => {
           </div>
         </template>
 
-        <template #id-data="{row}">
+        <template #id-data="{ row }">
           <define-state
-            :val="compileMessage(store.template!.message, {...row.labels, id: row.id, name: row.name})"
-            #="{state: message}"
+            :val="compileMessage(store.template!.message, { ...row.labels, id: row.id, name: row.name })"
+            #="{ state: message }"
           >
             <div class="flex gap-4">
               <u-button
+                v-if="row.contactNumber"
                 label="Send"
                 icon="i-mdi-whatsapp"
                 :to="buildWhatsAppLink(row.contactNumber, message)"
                 target="_blank"
+              />
+
+              <u-button
+                v-else
+                label="Copy"
+                icon="i-mdi-content-copy"
+                title="Copy message"
+                @click="copy(message).then(() => toast.add({ title: 'Copied to clipboard' }))"
               />
 
               <u-popover
@@ -202,7 +212,7 @@ const onImport = async (data: Record<string, unknown>[]) => {
 
     <u-modal
       v-model="showImportCsvModal"
-      :ui="{width: 'sm:max-w-xl'}"
+      :ui="{ width: 'sm:max-w-xl' }"
     >
       <csv-importer @import="onImport" />
     </u-modal>
