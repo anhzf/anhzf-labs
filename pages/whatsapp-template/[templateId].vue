@@ -151,7 +151,7 @@ const onImport = async (data: Record<string, unknown>[]) => {
               />
 
               <u-popover
-                mode="hover"
+                mode="click"
                 class="max-w-[max(65ch,96vw)]"
               >
                 <u-button
