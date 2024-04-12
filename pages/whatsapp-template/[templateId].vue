@@ -2,7 +2,8 @@
 import { OnClickOutside } from '@vueuse/components';
 import { collection } from 'firebase/firestore';
 import { useLoading } from '~/composables/useLoading';
-import type { InRecipient } from '~/modules/template/interfaces';
+import type { HasId } from '~/lib/types';
+import type { InRecipient, OutRecipient } from '~/modules/template/interfaces';
 import { buildWhatsAppLink, compileMessage } from '~/modules/template/utils';
 import useTemplateStore from '~/stores/template';
 
@@ -49,9 +50,9 @@ const recipientFields = ref<InRecipient>();
 const recipientIdModal = ref<string>();
 const showImportCsvModal = ref(false);
 
-const onRecipientDeleteClick = async (id: string) => {
-  if (window.confirm('Are you sure you want to delete this recipient?')) {
-    await loading(store.deleteRecipient(id));
+const onRecipientDeleteClick = async (item: OutRecipient & HasId) => {
+  if (window.confirm(`Are you sure you want to delete "${item.name}" from recipients?`)) {
+    await loading(store.deleteRecipient(item.id));
     toast.add({ title: 'Recipient deleted' });
   }
 };
@@ -221,7 +222,7 @@ const onImport = async (data: Record<string, unknown>[]) => {
                 icon="i-heroicons-trash"
                 variant="ghost"
                 color="red"
-                @click="onRecipientDeleteClick(row.id)"
+                @click="onRecipientDeleteClick(row)"
               />
             </div>
           </define-state>
