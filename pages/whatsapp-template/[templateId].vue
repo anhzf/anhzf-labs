@@ -6,6 +6,19 @@ import type { InRecipient } from '~/modules/template/interfaces';
 import { buildWhatsAppLink, compileMessage } from '~/modules/template/utils';
 import useTemplateStore from '~/stores/template';
 
+const isContactSupported = () => 'contacts' in window.navigator;
+const selectContacts = () => navigator.contacts.select(['name', 'tel'], { multiple: true });
+
+/**
+ * Expect from 081234567890 to 6281234567890
+ * or remove +, - and ()
+ */
+const formatTelFromContact = (tel: string) => {
+  if (tel.startsWith('08')) return `62${tel.slice(1)}`;
+  if (tel.startsWith('+')) return tel.replace(/\D/g, '');
+  return tel;
+};
+
 const store = useTemplateStore();
 await store.ensureTemplate();
 
@@ -41,6 +54,15 @@ const onRecipientDeleteClick = async (id: string) => {
     await loading(store.deleteRecipient(id));
     toast.add({ title: 'Recipient deleted' });
   }
+};
+
+const onSelectContactsClick = async () => {
+  const selected = await selectContacts();
+
+  await loading(store.addRecipient(...selected.map(({ name, tel }) => ({
+    name: name[0],
+    contactNumber: formatTelFromContact(tel[0]),
+  })) as [InRecipient, ...InRecipient[]]));
 };
 
 const onImport = async (data: Record<string, unknown>[]) => {
@@ -81,6 +103,14 @@ const onImport = async (data: Record<string, unknown>[]) => {
             icon="i-heroicons-document-arrow-down"
             variant="outline"
             @click="showImportCsvModal = true"
+          />
+
+          <u-button
+            v-if="isContactSupported()"
+            label="Select Contacts"
+            icon="i-heroicons-user-group"
+            variant="outline"
+            @click="onSelectContactsClick"
           />
         </div>
       </div>
