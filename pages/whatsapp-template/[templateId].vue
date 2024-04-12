@@ -44,11 +44,12 @@ const rows = computed(() => recipients.value.map((recipient, index) => ({
   id: recipient.id,
 })));
 
-const [, loading] = useLoading();
+const [isLoading, loading] = useLoading();
 
 const recipientFields = ref<InRecipient>();
 const recipientIdModal = ref<string>();
 const showImportCsvModal = ref(false);
+const selected = ref<(OutRecipient & HasId)[]>([]);
 
 const onRecipientDeleteClick = async (item: OutRecipient & HasId) => {
   if (window.confirm(`Are you sure you want to delete "${item.name}" from recipients?`)) {
@@ -58,9 +59,9 @@ const onRecipientDeleteClick = async (item: OutRecipient & HasId) => {
 };
 
 const onSelectContactsClick = async () => {
-  const selected = await selectContacts();
+  const contacts = await selectContacts();
 
-  await loading(store.addRecipient(...selected.map(({ name, tel }) => ({
+  await loading(store.addRecipient(...contacts.map(({ name, tel }) => ({
     name: name[0],
     contactNumber: formatTelFromContact(tel[0]),
   })) as [InRecipient, ...InRecipient[]]));
@@ -74,6 +75,14 @@ const onImport = async (data: Record<string, unknown>[]) => {
   await loading(store.addRecipient(...data as [InRecipient, ...InRecipient[]]));
   showImportCsvModal.value = false;
   toast.add({ title: `${data.length} Recipients imported` });
+};
+
+const onMultipleDeleteClick = async () => {
+  if (!window.confirm(`Are you sure you want to delete ${selected.value.length} recipients?`)) return;
+
+  await loading(Promise.all(selected.value.map((item) => store.deleteRecipient(item.id))));
+  selected.value = [];
+  toast.add({ title: 'Recipients deleted' });
 };
 </script>
 
@@ -113,10 +122,20 @@ const onImport = async (data: Record<string, unknown>[]) => {
             variant="outline"
             @click="onSelectContactsClick"
           />
+
+          <template v-if="selected.length">
+            <u-button
+              label="Delete"
+              icon="i-heroicons-trash"
+              color="red"
+              @click="onMultipleDeleteClick"
+            />
+          </template>
         </div>
       </div>
 
       <u-table
+        v-model="selected"
         :columns="columns"
         :rows="rows"
         :loading="recipientsPending"
@@ -247,5 +266,13 @@ const onImport = async (data: Record<string, unknown>[]) => {
     >
       <csv-importer @import="onImport" />
     </u-modal>
+
+    <div
+      v-if="isLoading"
+      class="fixed inset-0 bg-slate-900/50 flex flex-col justify-center items-center gap-2"
+    >
+      <progress-circular class="text-3xl" />
+      <div>Loading...</div>
+    </div>
   </div>
 </template>

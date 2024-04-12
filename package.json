@@ -28,6 +28,7 @@
     "nuxt": "^3.10.1",
     "nuxt-vuefire": "^1.0.1",
     "pinia": "^2.1.7",
+    "tailwind-merge": "^2.2.2",
     "valibot": "^0.28.1",
     "vue": "^3.4.19",
     "vue-router": "^4.2.5",
