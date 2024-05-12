@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { OnClickOutside } from '@vueuse/components';
-import { collection } from 'firebase/firestore';
+import { collection, orderBy, query } from 'firebase/firestore';
 import { useLoading } from '~/composables/useLoading';
 import type { HasId } from '~/lib/types';
 import type { InRecipient, OutRecipient } from '~/modules/template/interfaces';
@@ -36,7 +36,9 @@ const columns = [
 const toast = useToast();
 const { copy } = useClipboard();
 
-const recipientsRoot = computed(() => (store.ref ? collection(store.ref, 'recipients') : null));
+const recipientsRoot = computed(() => (store.ref
+  ? query(collection(store.ref, 'recipients'), orderBy('name', 'asc'))
+  : null));
 const { data: recipients, pending: recipientsPending } = useCollection(recipientsRoot);
 const rows = computed(() => recipients.value.map((recipient, index) => ({
   ...recipient,
