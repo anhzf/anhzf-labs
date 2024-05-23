@@ -1,0 +1,28 @@
+{
+	"folders": [
+		{
+			"name": "🏠",
+			"path": "."
+		},
+		{
+			"name": "👉 web",
+			"path": "./web"
+		},
+		{
+			"name": "👉 functions",
+			"path": "./functions"
+		}
+	],
+	"settings": {
+		"[typescript]": {
+			"editor.defaultFormatter": "dbaeumer.vscode-eslint"
+		},
+		"deno.enablePaths": [
+			"./backend"
+		],
+		"deno.importMap": "./backend/deno.json",
+		"conventionalCommits.scopes": [
+			"fns"
+		]
+	}
+}
