@@ -6,7 +6,9 @@ let $: Browser | undefined;
 
 const getBrowser = async () => {
   if (!$) {
-    $ = await launch({args: ["--no-sandbox", "--disable-setuid-sandbox"]});
+    $ = await launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
   }
   return $;
 };
@@ -18,14 +20,23 @@ const closeBrowser = async () => {
   }
 };
 
-type GetPdfOptions = PDFOptions
+interface GetPdfOptions extends PDFOptions {
+  waitEvent?: boolean;
+}
 
 export async function getPdf(url: string, opts?: GetPdfOptions) {
   const browser = await getBrowser();
 
   const page = await browser.newPage();
+  const pending = new Promise<void>(
+    (resolve) => page.exposeFunction("readyToPrint", resolve)
+  );
 
   await page.goto(url, {waitUntil: "networkidle2"});
+
+  if (opts?.waitEvent === true) {
+    await pending;
+  }
 
   const pdf = await page.pdf(opts);
 
