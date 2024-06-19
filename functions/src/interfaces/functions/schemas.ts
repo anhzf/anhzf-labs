@@ -9,4 +9,6 @@ export const PdfQuerySchema = object({
   landscape: optional(BooleanSchema),
   waitEvent: optional(BooleanSchema),
   printBackground: optional(BooleanSchema),
+  filename: optional(string()),
+  storeKey: optional(string()),
 }, any());
