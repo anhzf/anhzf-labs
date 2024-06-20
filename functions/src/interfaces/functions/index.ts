@@ -26,14 +26,10 @@ export const pdf = onRequest({
         return;
       }
 
-      res.header(
-        "Content-Disposition",
-        `inline; filename="${file.metadata.filename || "file.pdf"}"`
-      );
-      res.type("application/pdf");
-
-      file.createReadStream().pipe(res)
-        .on("error", (err) => res.status(500).send({error: err.message}));
+      res.json(file.getSignedUrl({
+        action: "read",
+        expires: Date.now() + 30 * 60_000, // 30 minutes
+      }));
 
       return;
     }
