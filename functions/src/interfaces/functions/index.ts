@@ -6,6 +6,8 @@ import {PdfQuerySchema} from "./schemas";
 
 const STORE_PATH_PREFIX = "pdfs/";
 
+const CACHE_EXPIRATION = 30; // minutes
+
 export const pdf = onRequest({
   memory: "512MiB",
   maxInstances: 5,
@@ -28,13 +30,14 @@ export const pdf = onRequest({
 
       res.json(file.getSignedUrl({
         action: "read",
-        expires: Date.now() + 30 * 60_000, // 30 minutes
+        expires: Date.now() + CACHE_EXPIRATION * 60_000, // 30 minutes
       }));
 
       return;
     }
 
     const pdf = await getPdf(url, opts);
+    res.header("Cache-Control", `public, max-age=${CACHE_EXPIRATION * 60}`);
     res.type("application/pdf").send(pdf);
   } break;
 
