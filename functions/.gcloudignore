@@ -4,4 +4,8 @@
 .gitignore
 
 node_modules
+.cache
+
+src
+
 #!include:.gitignore
