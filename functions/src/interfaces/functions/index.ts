@@ -12,6 +12,8 @@ export const pdf = onRequest({
   memory: "512MiB",
   maxInstances: 5,
 }, async (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST");
   res.type("json");
   const {
     url, storeKey, filename = "file.pdf", ...opts
@@ -40,12 +42,6 @@ export const pdf = onRequest({
 
     const pdf = await getPdf(url, opts);
     res.header("Cache-Control", `public, max-age=${CACHE_EXPIRATION * 60}`);
-    res.header("Age", `${CACHE_EXPIRATION * 60}`);
-    res.header(
-      "Expires",
-      new Date(Date.now() + CACHE_EXPIRATION * 60_000).toUTCString(),
-    );
-    res.header("Last-Modified", new Date().toUTCString());
     res.header("ETag", JSON.stringify(req.query));
     res.header("Content-Disposition", `inline; filename=${filename}`);
     res.type("application/pdf").send(pdf);
