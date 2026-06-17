@@ -25,11 +25,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            dist
-            .nuxt
-          key: ${{ runner.os }}-nuxt-build-${{ hashFiles('dist') }}
+            web/.output
+          key: ${{ runner.os }}-tanstack-build-${{ hashFiles('web/src') }}
           restore-keys: |
-            ${{ runner.os }}-nuxt-build-
+            ${{ runner.os }}-tanstack-build-
       - run: npm ci && (echo '${{ vars.ENV }}' > .env) && cat .env && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
