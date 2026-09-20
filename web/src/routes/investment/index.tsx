@@ -1,4 +1,5 @@
 import { Button } from '#/components/ui/button';
+import { Skeleton } from '#/components/ui/skeleton';
 import { useAuth } from '#/hooks/useAuth';
 import { computeFIFO, computePortfolioSummary, computePositions } from '#/modules/investment/utils';
 import {
@@ -37,7 +38,23 @@ function InvestmentDashboardPage() {
   }
 
   if (txLoading) {
-    return <div className="p-6">Loading...</div>;
+    return (
+      <div className="container mx-auto p-6">
+        <div className="flex justify-between items-center mb-6">
+          <Skeleton className="h-9 w-72" />
+          <Skeleton className="h-9 w-40" />
+        </div>
+        <Skeleton className="h-4 w-full max-w-xl mb-4" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="border rounded-lg p-6">
+              <Skeleton className="h-4 w-28 mb-2" />
+              <Skeleton className="h-8 w-36" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   if (transactions.length === 0) {

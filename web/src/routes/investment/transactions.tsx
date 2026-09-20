@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '#/components/ui/select';
+import { Skeleton } from '#/components/ui/skeleton';
 import { Textarea } from '#/components/ui/textarea';
 import { useAuth } from '#/hooks/useAuth';
 import {
@@ -238,7 +239,29 @@ function InvestmentTransactionsPage() {
   }
 
   if (txLoading) {
-    return <div className="p-6">Loading...</div>;
+    return (
+      <div className="container mx-auto p-6">
+        <div className="flex justify-between items-center mb-6">
+          <Skeleton className="h-9 w-80" />
+          <div className="flex gap-2">
+            <Skeleton className="h-9 w-36" />
+            <Skeleton className="h-9 w-36" />
+          </div>
+        </div>
+        <div className="border rounded-lg overflow-hidden">
+          <div className="bg-gray-50 px-4 py-3">
+            <Skeleton className="h-4 w-full" />
+          </div>
+          <div className="divide-y">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="px-4 py-4">
+                <Skeleton className="h-4 w-full" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

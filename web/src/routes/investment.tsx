@@ -1,4 +1,5 @@
 import { Button } from '#/components/ui/button';
+import { Skeleton } from '#/components/ui/skeleton';
 import { useAuth } from '#/hooks/useAuth';
 import { useDarkMode } from '#/hooks/useDarkMode';
 import {
@@ -29,8 +30,13 @@ function InvestmentLayout() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      <div className="container mx-auto p-6 space-y-6">
+        <Skeleton className="h-9 w-64" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-28 rounded-lg" />
+          ))}
+        </div>
       </div>
     );
   }

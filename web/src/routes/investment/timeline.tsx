@@ -1,4 +1,5 @@
 import { LineChart } from '#/components/investment/LineChart';
+import { Skeleton } from '#/components/ui/skeleton';
 import { useAuth } from '#/hooks/useAuth';
 import {
   computeFIFO,
@@ -79,7 +80,16 @@ function InvestmentTimelinePage() {
   }
 
   if (txLoading || snapshotsLoading) {
-    return <div className="p-6">Loading...</div>;
+    return (
+      <div className="container mx-auto p-6">
+        <Skeleton className="h-9 w-64 mb-6" />
+        <div className="mb-6">
+          <Skeleton className="h-4 w-32 mb-1" />
+          <Skeleton className="h-8 w-24" />
+        </div>
+        <Skeleton className="h-[448px] w-full rounded-lg" />
+      </div>
+    );
   }
 
   if (transactions.length === 0) {

@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '#/components/ui/select';
+import { Skeleton } from '#/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/components/ui/tabs';
 import { Textarea } from '#/components/ui/textarea';
 import { useAuth } from '#/hooks/useAuth';
@@ -158,7 +159,25 @@ function InvestmentThesisPage() {
   }
 
   if (thesesLoading) {
-    return <div className="p-6">Loading...</div>;
+    return (
+      <div className="container mx-auto p-6">
+        <div className="flex justify-between items-center mb-6">
+          <Skeleton className="h-9 w-80" />
+          <Skeleton className="h-9 w-36" />
+        </div>
+        <Skeleton className="h-9 w-56 mb-6" />
+        <div className="grid gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="border rounded-lg p-4 space-y-3">
+              <Skeleton className="h-6 w-24" />
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-2/3" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   const ThesisCard = ({ thesis }: { thesis: Thesis; }) => {
