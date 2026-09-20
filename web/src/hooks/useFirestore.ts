@@ -1,10 +1,10 @@
 import type {
-  CollectionReference,
   DocumentReference,
-  QueryConstraint,
-} from 'firebase/firestore'
-import { onSnapshot, query } from 'firebase/firestore'
-import { useEffect, useState } from 'react'
+  Query,
+  QueryConstraint
+} from 'firebase/firestore';
+import { onSnapshot, query } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 
 /**
  * Custom hook for real-time Firestore document subscription
@@ -50,7 +50,7 @@ export function useDocument<T = Record<string, any>>(
  * Custom hook for real-time Firestore collection subscription
  */
 export function useCollection<T = Record<string, any>>(
-  collectionRef: CollectionReference | null,
+  collectionRef: Query | null,
   ...queryConstraints: QueryConstraint[]
 ) {
   const [data, setData] = useState<T[]>([])

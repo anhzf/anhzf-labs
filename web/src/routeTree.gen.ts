@@ -9,30 +9,86 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as McpRouteImport } from './routes/mcp'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as WhatsappTemplateIndexRouteImport } from './routes/whatsapp-template.index'
+import { Route as InvestmentRouteImport } from './routes/investment'
+import { Route as McpRouteImport } from './routes/mcp'
+import { Route as ApiIndexRouteImport } from './routes/api/index'
+import { Route as ApiMathRouteImport } from './routes/api/math'
 import { Route as FileIndexRouteImport } from './routes/file.index'
+import { Route as InvestmentIndexRouteImport } from './routes/investment/index'
+import { Route as InvestmentSettingsRouteImport } from './routes/investment/settings'
+import { Route as InvestmentSignInRouteImport } from './routes/investment/sign-in'
+import { Route as InvestmentThesisRouteImport } from './routes/investment/thesis'
+import { Route as InvestmentTimelineRouteImport } from './routes/investment/timeline'
+import { Route as InvestmentTransactionsRouteImport } from './routes/investment/transactions'
+import { Route as WhatsappTemplateIndexRouteImport } from './routes/whatsapp-template.index'
 import { Route as WhatsappTemplateTemplateIdRouteImport } from './routes/whatsapp-template.$templateId'
+import { Route as ApiFirebaseSecurityRulesRouteImport } from './routes/api/firebase/security-rules'
+import { Route as ApiStocksIndexRouteImport } from './routes/api/stocks/index'
 
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WhatsappTemplateIndexRoute = WhatsappTemplateIndexRouteImport.update({
-  id: '/whatsapp-template/',
-  path: '/whatsapp-template/',
+const InvestmentRoute = InvestmentRouteImport.update({
+  id: '/investment',
+  path: '/investment',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiIndexRoute = ApiIndexRouteImport.update({
+  id: '/api/',
+  path: '/api/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMathRoute = ApiMathRouteImport.update({
+  id: '/api/math',
+  path: '/api/math',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FileIndexRoute = FileIndexRouteImport.update({
   id: '/file/',
   path: '/file/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvestmentIndexRoute = InvestmentIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => InvestmentRoute,
+} as any)
+const InvestmentSettingsRoute = InvestmentSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => InvestmentRoute,
+} as any)
+const InvestmentSignInRoute = InvestmentSignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => InvestmentRoute,
+} as any)
+const InvestmentThesisRoute = InvestmentThesisRouteImport.update({
+  id: '/thesis',
+  path: '/thesis',
+  getParentRoute: () => InvestmentRoute,
+} as any)
+const InvestmentTimelineRoute = InvestmentTimelineRouteImport.update({
+  id: '/timeline',
+  path: '/timeline',
+  getParentRoute: () => InvestmentRoute,
+} as any)
+const InvestmentTransactionsRoute = InvestmentTransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => InvestmentRoute,
+} as any)
+const WhatsappTemplateIndexRoute = WhatsappTemplateIndexRouteImport.update({
+  id: '/whatsapp-template/',
+  path: '/whatsapp-template/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WhatsappTemplateTemplateIdRoute =
@@ -41,70 +97,143 @@ const WhatsappTemplateTemplateIdRoute =
     path: '/whatsapp-template/$templateId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiFirebaseSecurityRulesRoute =
+  ApiFirebaseSecurityRulesRouteImport.update({
+    id: '/api/firebase/security-rules',
+    path: '/api/firebase/security-rules',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiStocksIndexRoute = ApiStocksIndexRouteImport.update({
+  id: '/api/stocks/',
+  path: '/api/stocks/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/investment': typeof InvestmentRouteWithChildren
   '/mcp': typeof McpRoute
+  '/api/math': typeof ApiMathRoute
+  '/investment/settings': typeof InvestmentSettingsRoute
+  '/investment/sign-in': typeof InvestmentSignInRoute
+  '/investment/thesis': typeof InvestmentThesisRoute
+  '/investment/timeline': typeof InvestmentTimelineRoute
+  '/investment/transactions': typeof InvestmentTransactionsRoute
   '/whatsapp-template/$templateId': typeof WhatsappTemplateTemplateIdRoute
+  '/api/': typeof ApiIndexRoute
   '/file/': typeof FileIndexRoute
+  '/investment/': typeof InvestmentIndexRoute
   '/whatsapp-template/': typeof WhatsappTemplateIndexRoute
+  '/api/firebase/security-rules': typeof ApiFirebaseSecurityRulesRoute
+  '/api/stocks/': typeof ApiStocksIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/mcp': typeof McpRoute
+  '/api/math': typeof ApiMathRoute
+  '/investment/settings': typeof InvestmentSettingsRoute
+  '/investment/sign-in': typeof InvestmentSignInRoute
+  '/investment/thesis': typeof InvestmentThesisRoute
+  '/investment/timeline': typeof InvestmentTimelineRoute
+  '/investment/transactions': typeof InvestmentTransactionsRoute
   '/whatsapp-template/$templateId': typeof WhatsappTemplateTemplateIdRoute
+  '/api': typeof ApiIndexRoute
   '/file': typeof FileIndexRoute
+  '/investment': typeof InvestmentIndexRoute
   '/whatsapp-template': typeof WhatsappTemplateIndexRoute
+  '/api/firebase/security-rules': typeof ApiFirebaseSecurityRulesRoute
+  '/api/stocks': typeof ApiStocksIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/investment': typeof InvestmentRouteWithChildren
   '/mcp': typeof McpRoute
+  '/api/math': typeof ApiMathRoute
+  '/investment/settings': typeof InvestmentSettingsRoute
+  '/investment/sign-in': typeof InvestmentSignInRoute
+  '/investment/thesis': typeof InvestmentThesisRoute
+  '/investment/timeline': typeof InvestmentTimelineRoute
+  '/investment/transactions': typeof InvestmentTransactionsRoute
   '/whatsapp-template/$templateId': typeof WhatsappTemplateTemplateIdRoute
+  '/api/': typeof ApiIndexRoute
   '/file/': typeof FileIndexRoute
+  '/investment/': typeof InvestmentIndexRoute
   '/whatsapp-template/': typeof WhatsappTemplateIndexRoute
+  '/api/firebase/security-rules': typeof ApiFirebaseSecurityRulesRoute
+  '/api/stocks/': typeof ApiStocksIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/investment'
     | '/mcp'
+    | '/api/math'
+    | '/investment/settings'
+    | '/investment/sign-in'
+    | '/investment/thesis'
+    | '/investment/timeline'
+    | '/investment/transactions'
     | '/whatsapp-template/$templateId'
+    | '/api/'
     | '/file/'
+    | '/investment/'
     | '/whatsapp-template/'
+    | '/api/firebase/security-rules'
+    | '/api/stocks/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/mcp'
+    | '/api/math'
+    | '/investment/settings'
+    | '/investment/sign-in'
+    | '/investment/thesis'
+    | '/investment/timeline'
+    | '/investment/transactions'
     | '/whatsapp-template/$templateId'
+    | '/api'
     | '/file'
+    | '/investment'
     | '/whatsapp-template'
+    | '/api/firebase/security-rules'
+    | '/api/stocks'
   id:
     | '__root__'
     | '/'
+    | '/investment'
     | '/mcp'
+    | '/api/math'
+    | '/investment/settings'
+    | '/investment/sign-in'
+    | '/investment/thesis'
+    | '/investment/timeline'
+    | '/investment/transactions'
     | '/whatsapp-template/$templateId'
+    | '/api/'
     | '/file/'
+    | '/investment/'
     | '/whatsapp-template/'
+    | '/api/firebase/security-rules'
+    | '/api/stocks/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  InvestmentRoute: typeof InvestmentRouteWithChildren
   McpRoute: typeof McpRoute
+  ApiMathRoute: typeof ApiMathRoute
   WhatsappTemplateTemplateIdRoute: typeof WhatsappTemplateTemplateIdRoute
+  ApiIndexRoute: typeof ApiIndexRoute
   FileIndexRoute: typeof FileIndexRoute
   WhatsappTemplateIndexRoute: typeof WhatsappTemplateIndexRoute
+  ApiFirebaseSecurityRulesRoute: typeof ApiFirebaseSecurityRulesRoute
+  ApiStocksIndexRoute: typeof ApiStocksIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -112,11 +241,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/whatsapp-template/': {
-      id: '/whatsapp-template/'
-      path: '/whatsapp-template'
-      fullPath: '/whatsapp-template/'
-      preLoaderRoute: typeof WhatsappTemplateIndexRouteImport
+    '/investment': {
+      id: '/investment'
+      path: '/investment'
+      fullPath: '/investment'
+      preLoaderRoute: typeof InvestmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/': {
+      id: '/api/'
+      path: '/api'
+      fullPath: '/api/'
+      preLoaderRoute: typeof ApiIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/math': {
+      id: '/api/math'
+      path: '/api/math'
+      fullPath: '/api/math'
+      preLoaderRoute: typeof ApiMathRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/file/': {
@@ -126,6 +276,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FileIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/investment/': {
+      id: '/investment/'
+      path: '/'
+      fullPath: '/investment/'
+      preLoaderRoute: typeof InvestmentIndexRouteImport
+      parentRoute: typeof InvestmentRoute
+    }
+    '/investment/settings': {
+      id: '/investment/settings'
+      path: '/settings'
+      fullPath: '/investment/settings'
+      preLoaderRoute: typeof InvestmentSettingsRouteImport
+      parentRoute: typeof InvestmentRoute
+    }
+    '/investment/sign-in': {
+      id: '/investment/sign-in'
+      path: '/sign-in'
+      fullPath: '/investment/sign-in'
+      preLoaderRoute: typeof InvestmentSignInRouteImport
+      parentRoute: typeof InvestmentRoute
+    }
+    '/investment/thesis': {
+      id: '/investment/thesis'
+      path: '/thesis'
+      fullPath: '/investment/thesis'
+      preLoaderRoute: typeof InvestmentThesisRouteImport
+      parentRoute: typeof InvestmentRoute
+    }
+    '/investment/timeline': {
+      id: '/investment/timeline'
+      path: '/timeline'
+      fullPath: '/investment/timeline'
+      preLoaderRoute: typeof InvestmentTimelineRouteImport
+      parentRoute: typeof InvestmentRoute
+    }
+    '/investment/transactions': {
+      id: '/investment/transactions'
+      path: '/transactions'
+      fullPath: '/investment/transactions'
+      preLoaderRoute: typeof InvestmentTransactionsRouteImport
+      parentRoute: typeof InvestmentRoute
+    }
+    '/whatsapp-template/': {
+      id: '/whatsapp-template/'
+      path: '/whatsapp-template'
+      fullPath: '/whatsapp-template/'
+      preLoaderRoute: typeof WhatsappTemplateIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/whatsapp-template/$templateId': {
       id: '/whatsapp-template/$templateId'
       path: '/whatsapp-template/$templateId'
@@ -133,15 +332,56 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WhatsappTemplateTemplateIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/firebase/security-rules': {
+      id: '/api/firebase/security-rules'
+      path: '/api/firebase/security-rules'
+      fullPath: '/api/firebase/security-rules'
+      preLoaderRoute: typeof ApiFirebaseSecurityRulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/stocks/': {
+      id: '/api/stocks/'
+      path: '/api/stocks'
+      fullPath: '/api/stocks/'
+      preLoaderRoute: typeof ApiStocksIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface InvestmentRouteChildren {
+  InvestmentSettingsRoute: typeof InvestmentSettingsRoute
+  InvestmentSignInRoute: typeof InvestmentSignInRoute
+  InvestmentThesisRoute: typeof InvestmentThesisRoute
+  InvestmentTimelineRoute: typeof InvestmentTimelineRoute
+  InvestmentTransactionsRoute: typeof InvestmentTransactionsRoute
+  InvestmentIndexRoute: typeof InvestmentIndexRoute
+}
+
+const InvestmentRouteChildren: InvestmentRouteChildren = {
+  InvestmentSettingsRoute: InvestmentSettingsRoute,
+  InvestmentSignInRoute: InvestmentSignInRoute,
+  InvestmentThesisRoute: InvestmentThesisRoute,
+  InvestmentTimelineRoute: InvestmentTimelineRoute,
+  InvestmentTransactionsRoute: InvestmentTransactionsRoute,
+  InvestmentIndexRoute: InvestmentIndexRoute,
+}
+
+const InvestmentRouteWithChildren = InvestmentRoute._addFileChildren(
+  InvestmentRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  InvestmentRoute: InvestmentRouteWithChildren,
   McpRoute: McpRoute,
+  ApiMathRoute: ApiMathRoute,
   WhatsappTemplateTemplateIdRoute: WhatsappTemplateTemplateIdRoute,
+  ApiIndexRoute: ApiIndexRoute,
   FileIndexRoute: FileIndexRoute,
   WhatsappTemplateIndexRoute: WhatsappTemplateIndexRoute,
+  ApiFirebaseSecurityRulesRoute: ApiFirebaseSecurityRulesRoute,
+  ApiStocksIndexRoute: ApiStocksIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

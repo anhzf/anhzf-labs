@@ -1,0 +1,27 @@
+{
+  "name": "anhzf-labs",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anhzf/anhzf-labs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anhzf/anhzf-labs/issues"
+  },
+  "homepage": "https://github.com/anhzf/anhzf-labs#readme",
+  "workspaces": [
+    "web",
+    "functions"
+  ]
+}
