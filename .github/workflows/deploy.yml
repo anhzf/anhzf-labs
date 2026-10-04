@@ -1,38 +1,107 @@
-name: Deploy to Firebase Hosting
+name: Deploy to Firebase
 on:
   push:
     branches:
       - master
     paths:
       - "web/**"
+      - "firebase.json"
+      - ".github/workflows/deploy.yml"
   workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PROJECT_ID: anhzf-labs
+  REGION: us-central1
+  SERVICE: anhzf-labs-web
+  IMAGE: us-central1-docker.pkg.dev/anhzf-labs/anhzf-labs/web
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web
+    permissions:
+      contents: read
+      id-token: write # required for Workload Identity Federation
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
         with:
-          node-version: "20"
-          cache: npm
-          cache-dependency-path: web/package-lock.json
-      - name: Restore cache
+          workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_DEPLOY_SERVICE_ACCOUNT }}
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Restore bun cache
         uses: actions/cache@v4
         with:
-          path: |
-            web/.output
-          key: ${{ runner.os }}-tanstack-build-${{ hashFiles('web/src') }}
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
           restore-keys: |
-            ${{ runner.os }}-tanstack-build-
-      - run: npm ci && (echo '${{ vars.ENV }}' > .env) && cat .env && npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+            ${{ runner.os }}-bun-
+
+      - name: Install deps
+        run: bun install --frozen-lockfile
+
+      # `vars.ENV` is passed through the environment, never interpolated into the
+      # script — a quote in the value would otherwise break the shell.
+      - name: Build web
+        working-directory: web
+        env:
+          ENV: ${{ vars.ENV }}
+        run: |
+          printf '%s' "$ENV" > .env
+          bun run build
+
+      # Both deploy steps below silently ship a broken release without this.
+      - name: Validate build output
+        run: |
+          test -f web/.output/server/index.mjs
+          test -f web/.output/public/index.html
+
+      # auth@v2 does not register a docker credential helper for us here, so
+      # Artifact Registry auth is done explicitly.
+      - name: Configure docker for Artifact Registry
+        run: gcloud auth configure-docker "$REGION-docker.pkg.dev" --quiet
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push container image
+        uses: docker/build-push-action@v6
         with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_ANHZF_LABS }}"
-          channelId: live
-          projectId: anhzf-labs
+          context: web
+          # `file` resolves relative to `context`, not the repo root — with
+          # context: web this is web/Dockerfile.
+          file: Dockerfile
+          # Cloud Run only serves linux/amd64; without this an arm runner
+          # would publish an image the service refuses to start.
+          platforms: linux/amd64
+          push: true
+          tags: ${{ env.IMAGE }}:${{ github.sha }}
+
+      - name: Deploy Cloud Run service
+        run: |
+          gcloud run deploy "$SERVICE" \
+            --image "$IMAGE:${{ github.sha }}" \
+            --region "$REGION" \
+            --project "$PROJECT_ID" \
+            --allow-unauthenticated \
+            --quiet
+
+      # Deployed after Cloud Run: the /api/** rewrite needs the service to exist.
+      - name: Deploy Hosting
+        run: |
+          npx --yes firebase-tools@latest deploy --only hosting \
+            --project "$PROJECT_ID" \
+            --non-interactive

@@ -1,0 +1,6 @@
+# Context is web/ and the image only needs the built output.
+# Deny everything, then allow the two things the build actually reads.
+**
+!Dockerfile
+!.output
+!.output/**
