@@ -81,9 +81,10 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: web
-          # `file` resolves relative to `context`, not the repo root — with
-          # context: web this is web/Dockerfile.
-          file: Dockerfile
+          # Resolved relative to the working directory (repo root), NOT the
+          # context — `file: Dockerfile` here means `open Dockerfile`, which
+          # does not exist.
+          file: web/Dockerfile
           # Cloud Run only serves linux/amd64; without this an arm runner
           # would publish an image the service refuses to start.
           platforms: linux/amd64
