@@ -48,7 +48,7 @@ const transactionSchema = z.object({
     .string()
     .min(1, 'Symbol is required')
     .transform((val) => val.trim().toUpperCase()),
-  type: z.enum(['BUY', 'SELL']),
+  type: z.enum(['BUY', 'SELL']).default('BUY'),
   quantity: z.number().positive('Quantity must be positive'),
   pricePerShare: z.number().positive('Price must be positive'),
   fee: z.number().min(0, 'Fee cannot be negative').default(0),
@@ -301,10 +301,10 @@ function InvestmentTransactionsPage() {
                 <div>
                   <Label htmlFor="type">Type</Label>
                   <Select
-                    defaultValue="BUY"
-                    onValueChange={(value) => {
-                      register('type').onChange({ target: { value } });
-                    }}
+                    value={selectedType}
+                    onValueChange={(v) =>
+                      setValue('type', v as TransactionFormData['type'])
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
