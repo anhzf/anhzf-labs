@@ -2,7 +2,7 @@ import { auth, db, googleAuthProvider } from '#/lib/firebase';
 import { investmentKeys } from '#/queries/investment';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { User } from 'firebase/auth';
-import { signOut as firebaseSignOut, onAuthStateChanged, signInWithPopup } from 'firebase/auth';
+import { signOut as firebaseSignOut, onIdTokenChanged, signInWithPopup } from 'firebase/auth';
 import type { Firestore } from 'firebase/firestore';
 import { doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -33,7 +33,7 @@ export function useAuth() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onIdTokenChanged(auth, (currentUser) => {
       setUser(currentUser);
       setAuthLoading(false);
     });

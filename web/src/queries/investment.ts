@@ -1,3 +1,4 @@
+import { useAuth } from '#/hooks/useAuth';
 import { db } from '#/lib/firebase';
 import type { FeePreset } from '#/modules/investment/fee-preset-service';
 import {
@@ -42,9 +43,11 @@ export function useInvestmentTransactionsQuery(userId?: string) {
 }
 
 export function useInvestmentPricesQuery() {
+  const { user } = useAuth();
   return useQuery({
     queryKey: investmentKeys.prices(),
     queryFn: () => priceProvider.getAllPrices(),
+    enabled: !!user,
   });
 }
 
