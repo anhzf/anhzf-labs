@@ -1,6 +1,7 @@
 import { Button } from '#/components/ui/button';
 import { Skeleton } from '#/components/ui/skeleton';
 import { useAuth } from '#/hooks/useAuth';
+import type { ThemeMode } from '#/hooks/useDarkMode';
 import { useDarkMode } from '#/hooks/useDarkMode';
 import {
   createFileRoute,
@@ -16,7 +17,10 @@ export const Route = createFileRoute('/investment')({
   component: InvestmentLayout,
 });
 
-const themeCycle: Record<string, [/* value */string, /* icon */ReactElement]> = {
+const themeCycle: Record<
+  ThemeMode,
+  [/* value */ ThemeMode, /* icon */ ReactElement]
+> = {
   light: ['dark', <SunIcon />],
   dark: ['auto', <MoonIcon />],
   auto: ['light', <MonitorCogIcon />],
